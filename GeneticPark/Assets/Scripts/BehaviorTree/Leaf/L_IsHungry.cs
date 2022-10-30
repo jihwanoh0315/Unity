@@ -14,9 +14,11 @@ public class L_IsHungry : Node
 
     public override NodeState Evaluate()
     {
+        // When It feel the hungry
         if(m_creature.m_hunger < m_creature.m_hungryRate)
         {
-            m_state = NodeState.RUNNING;
+            // Then do next step
+            m_state = NodeState.SUCCESS;
             return m_state;
         }
 

@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
 
-public class BT_Prey : BHTree
+public class BT_Carnivore : BHTree
 {
     public static float m_speed = 2.0f;
     public static float m_scanRange = 50.0f;
@@ -21,18 +18,44 @@ public class BT_Prey : BHTree
         {
             new C_Sequencer(new List<Node>
             {
-                new L_CheckEnemy(transform),
+                new L_IsHungry(transform),
                 new C_Selector(new List<Node>
                 {
+                    // Find food
                     new C_Sequencer(new List<Node>
                     {
-                        new L_CheckEnemyInRange(transform),
-                        new L_Runaway(transform),
+                        new L_FindingFood(transform, m_foodLocation),
+                        new L_GoToFood(transform),
+                        new L_EatFood(transform),
                     }),
-                    new L_Staring(transform),
+                    // If no food, hunting!
+                    new C_Sequencer(new List<Node>
+                    {
+                        new L_FindingPrey(transform),
+                        // chase prey
+                        new C_Selector(new List<Node> 
+                        {
+                            // Attack
+                            new C_Sequencer(new List<Node>
+                            {
+                                new L_CanAttack(transform),
+                                new L_Attack(transform),
+                            }),
+                            // if can't, Rush to prey
+                            new C_Sequencer(new List<Node>
+                            {
+                                new L_CanRush(transform),
+                                new L_Rush(transform),
+                            }),
+                            // if can't, sneak to the prey
+                            new L_Sneaking(transform),
+                        }),// chase end
+                    }),//hunting end
                 }),
             }),
-            new L_FindingFood(transform, m_foodLocation),
+            // If not hungry or prey, move around!
+            new L_Wandering(transform),
+            // put Sleep with random consequencer
         });
         return root;
     }

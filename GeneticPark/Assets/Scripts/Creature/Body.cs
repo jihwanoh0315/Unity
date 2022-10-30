@@ -12,7 +12,8 @@ public enum Organ
     CHEST,
     SKIN,
     BRAIN,
-    BONE
+    BONE,
+    DIGESTIVEORGAN
 }
 
 public class Body : MonoBehaviour
@@ -262,5 +263,32 @@ public class Bone : BodyPart
     }
 
     public float m_density;
+}
+
+public class DigestiveOrgan : BodyPart
+{
+    public override void Initialize(List<bool> gene_) //len = 32
+    {
+        int geneLen = gene_.Count;
+        int i = 0;
+
+        List<bool> forSize = new List<bool>();
+        List<bool> forLength = new List<bool>();
+
+        for (; i < geneLen/2; ++i)
+        {
+            forSize.Add(gene_[i]);
+        }
+        for(; i < geneLen; ++i)
+        {
+            forLength.Add(gene_[i]);
+        }
+
+        m_size = Translation_CountF(forSize);
+        m_length = Translation_CountF(forLength);
+    }
+
+    public float m_size;
+    public float m_length;
 }
 

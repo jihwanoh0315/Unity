@@ -73,12 +73,20 @@ public class Creature : MonoBehaviour
     public float m_accel;
     public float m_force;
 
+    // Health
+    public float m_health;
 
-    public float m_deadTime = 0.5f;
-    private float m_deadTimeCount = 0.0f;
+    // Time untill Dead body gone
+    public float m_deadTime; 
+    private float m_deadTimeCount = 0.0f; // +dt;
     
     public bool m_doDestroy;
 
+    /****************************************************
+     * 
+     * Inheritance
+     * 
+     * ***************************************************/
     List<Exon> GetGamete()
     {
         List<Exon> gamete = new List<Exon>();
@@ -200,9 +208,13 @@ public class Creature : MonoBehaviour
         newChest.Initialize(chestList);
         m_body.m_bodyParts.Add(Organ.CHEST, newChest);
 
-        //m_body.m_bodyParts.Add(Organ.EYES, new Eyes());
-        //m_body.m_bodyParts.Add(Organ.EYES, new Eyes());
-        //m_body.m_bodyParts.Add(Organ.EYES, new Eyes());
+        // DIGESTIVEORGAN
+        List<bool> digList = SetGeneRandomList(32);
+        m_gene.Add(new Exon(Organ.DIGESTIVEORGAN, digList));
+
+        DigestiveOrgan newDigest = new DigestiveOrgan();
+        newDigest.Initialize(digList);
+        m_body.m_bodyParts.Add(Organ.DIGESTIVEORGAN, newDigest);
     }
 
     public void SetGeneRandom(int size_)
@@ -283,6 +295,11 @@ public class Creature : MonoBehaviour
                     Brain newBrain = new Brain();
                     newBrain.Initialize(currEx.m_info);
                     m_body.m_bodyParts.Add(Organ.BRAIN, newBrain);
+                    break;
+                case Organ.DIGESTIVEORGAN:
+                    DigestiveOrgan newDigest = new DigestiveOrgan();
+                    newDigest.Initialize(currEx.m_info);
+                    m_body.m_bodyParts.Add(Organ.DIGESTIVEORGAN, newDigest);
                     break;
                 default:
                     break;
@@ -376,6 +393,8 @@ public class Creature : MonoBehaviour
         //m_navAgent.acceleration = m_accel * 2;
     }
 
+
+
     void Awake()
     {
         m_propBlock = new MaterialPropertyBlock();
@@ -392,37 +411,53 @@ public class Creature : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //m_gene = 0xAB;
-        //m_hungry = 10000.0f;
-
+        m_health = 100.0f;
+        m_deadTime = m_health;
     }
 
     // Update is called once per frame
     void Update()
     {
+        float dt = Time.deltaTime;
+
         if (m_doDestroy)
+        {
             DoDestroy();
+            return;
+        }
         // When hungry
         if (m_currStat == Status.RUNNING)
         {
-            m_hunger -= (Time.deltaTime * m_body.m_totalEnergyConsume) * 1.7f;
+            m_hunger -= (dt * m_body.m_totalEnergyConsume) * 1.7f;
         }
         else
-            m_hunger -= (Time.deltaTime * m_body.m_totalEnergyConsume);
+            m_hunger -= (dt * m_body.m_totalEnergyConsume);
+
+        if (m_health < 0.0f)
+            isDead();
 
         if (m_hunger < 0.0f)
-            isDead();
+        {
+            m_health -= dt;
+        }
     }
 
     public void isDead()
     {
+        // now, this is meat
+        int m_meatRange = 1 << 9;
+        gameObject.layer = m_meatRange;
+
         m_doDestroy = true;
+
         GetComponent<BT_Creature>().enabled = false;
         GetComponent<NavMeshAgent>().enabled = false;
-        GetComponent<BoxCollider>().enabled = false;
+
+        // Set color gray
         m_renderer.GetPropertyBlock(m_propBlock);
         m_propBlock.SetColor("_Color", Color.gray);
         m_renderer.SetPropertyBlock(m_propBlock);
+        // remove from child array
         m_worldLevelSetting.m_children.Remove(gameObject);
     }
     void DoDestroy()
@@ -460,4 +495,7 @@ public class Creature : MonoBehaviour
 
         return toReturn;
     }
+
+    public virtual void Eat(GameObject food_) { }
+    public virtual void Digest() { }
 }

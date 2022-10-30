@@ -6,6 +6,7 @@ public class L_FindingPrey : Node
 {
     //private static int m_enemyLayerMask = 1 << 6;
     private static int m_creatureLayerMask = 1 << 7;
+    public UnityEngine.AI.NavMeshAgent m_navAgent;
     private Transform m_transform;
     private Creature m_creature;
     private float m_scanRange;
@@ -20,13 +21,13 @@ public class L_FindingPrey : Node
 
     private int PreyPriority(Creature creature_)
     {
+        // Need to find small and easy-hunt creature
         return 0;
     }
 
 
     public override NodeState Evaluate()
     {
-        object t = GetData("prey");
         Collider[] colliders = Physics.OverlapSphere(
             m_transform.position, m_scanRange, m_creatureLayerMask);
         if(colliders.Length > 0)
@@ -42,6 +43,7 @@ public class L_FindingPrey : Node
                     // Check hash
                     // if(PreyPriority(currCreature) < PreyPriority(newCreature) 
                     m_parent.m_parent.SetData("prey", collider.gameObject);
+                    m_navAgent.SetDestination(collider.gameObject.transform.position);
                 }
             }
             // check starving ratio
@@ -54,6 +56,7 @@ public class L_FindingPrey : Node
                     // if(PreyPriority(currCreature) < PreyPriority(newCreature) 
                     // if not same
                     m_parent.m_parent.SetData("prey", collider.gameObject);
+                    m_navAgent.SetDestination(collider.gameObject.transform.position);
                 }
             }
             m_state = NodeState.SUCCESS;
