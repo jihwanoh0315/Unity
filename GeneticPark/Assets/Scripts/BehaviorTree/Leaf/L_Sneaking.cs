@@ -12,8 +12,6 @@ public class L_Sneaking : Node
 
     public Vector3 destination;
     public float m_moveScale;
-    private float m_runResetTime = 0.5f;
-    private float m_runCounter = 1.0f;
 
     public L_Sneaking(Transform transform_)
     {

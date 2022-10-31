@@ -860,7 +860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6109f16f46633544bd1ddb03f85c64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_creaturePrefab: {fileID: 1894340834969323266, guid: 070d3c25df40c28489d935b63f65ad68, type: 3}
+  m_creaturePrefabtoGen: {fileID: 1894340834969323266, guid: 90e3654d9cc0a8f459157b5234b24fc7, type: 3}
   m_selectedCreature: {fileID: 0}
   m_children: []
   m_parent: []

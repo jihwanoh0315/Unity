@@ -53,9 +53,9 @@ public class Creature : MonoBehaviour
     public Type m_type;
 
     // variables for rendering - color
-    private Renderer m_renderer;
-    private MaterialPropertyBlock m_propBlock;
-    private NavMeshAgent m_navAgent;
+    protected Renderer m_renderer;
+    protected MaterialPropertyBlock m_propBlock;
+    protected NavMeshAgent m_navAgent;
     public LevelSetting m_worldLevelSetting;
 
     // Values for Behavior Tree
@@ -64,10 +64,16 @@ public class Creature : MonoBehaviour
     public float m_usualSpeedRate; // ~1.0f
     public float m_sneakSpeedRate; // ~1.0f
 
+    //// Food
     // Hunger
-    public float m_maxHunger;
+    public static float m_maxHunger;  // not move
     public float m_hungryRate; // ~1.0f
     public float m_hunger;
+    // Digest
+    public float m_foodCapacity;
+    public float m_foodAmount;
+    public float m_digestSpeed;
+
 
     // Force
     public float m_accel;
@@ -75,10 +81,11 @@ public class Creature : MonoBehaviour
 
     // Health
     public float m_health;
+    public Vector3 m_size;
 
     // Time untill Dead body gone
     public float m_deadTime; 
-    private float m_deadTimeCount = 0.0f; // +dt;
+    public float m_deadTimeCount = 0.0f; // +dt;
     
     public bool m_doDestroy;
 
@@ -166,7 +173,13 @@ public class Creature : MonoBehaviour
         return newList;
     }
 
-    public void SetBasicGeneRandom()
+    public void InitializeRandomCreature()
+    {
+        InitializeBodyWithRandomGene();
+        InitializeCreatureWithBody();
+    }
+
+    public void InitializeBodyWithRandomGene()
     {
         // EYES
         List<bool> eyesList = SetGeneRandomList();
@@ -217,46 +230,7 @@ public class Creature : MonoBehaviour
         m_body.m_bodyParts.Add(Organ.DIGESTIVEORGAN, newDigest);
     }
 
-    public void SetGeneRandom(int size_)
-    {
-        int geneLength;
-        if (size_ < 3)
-        {
-            geneLength = 3;
-        }
-        else
-            geneLength = size_;
-
-        for (int i = 0; i < geneLength; ++i)
-        {
-            List<bool> geneBlock = new List<bool>();
-            if (i == 1)
-            {//Color
-                for (int j = 0; j < 8; ++j)
-                {
-                    geneBlock.Add(Random.Range(0, 10)
-                        < 5 ? true : false);
-                }
-                for (int j = 0; j < 16; ++j)
-                {
-                    geneBlock.Add(false);
-                }
-            }
-            else
-            {
-                for (int j = 0; j < 16; ++j)
-                {
-                    geneBlock.Add(Random.Range(0, 10)
-                        < 5 ? true : false);
-                }
-            }
-
-            Exon toAdd = new Exon();
-            toAdd.SetGene(geneBlock);
-            m_gene.Add(toAdd);
-        }
-    }
-    public void SetGene(List<Exon> gene_)
+    public void InitializeBodyWithGene(List<Exon> gene_)
     {
         m_gene.Clear();
         m_gene = new List<Exon>(gene_);
@@ -360,7 +334,7 @@ public class Creature : MonoBehaviour
         return geneColor;
     }
 
-    public void SetScaleAndColor()
+    public void InitializeCreatureWithBody()
     {
         // Scale
         float scaleCount = (float)(Translation_Count(m_gene[0].m_info));
@@ -387,10 +361,14 @@ public class Creature : MonoBehaviour
         m_accel = m_body.m_accel;
         m_force = m_body.m_force;
 
+        // Food
+        // hunger
         m_maxHunger = m_body.m_hunger * 60.0f;
         m_hungryRate = m_body.m_hungryRatio * m_maxHunger;
         m_hunger = m_maxHunger;
         //m_navAgent.acceleration = m_accel * 2;
+        // Digest
+        SetDigestInfo();
     }
 
 
@@ -420,6 +398,8 @@ public class Creature : MonoBehaviour
     {
         float dt = Time.deltaTime;
 
+        Digest();
+
         if (m_doDestroy)
         {
             DoDestroy();
@@ -442,15 +422,14 @@ public class Creature : MonoBehaviour
         }
     }
 
-    public void isDead()
+    public virtual void isDead() 
     {
         // now, this is meat
-        int m_meatRange = 1 << 9;
-        gameObject.layer = m_meatRange;
+        gameObject.layer = 9; // meat
 
         m_doDestroy = true;
 
-        GetComponent<BT_Creature>().enabled = false;
+        //GetComponent<BT_Creature>().enabled = false;
         GetComponent<NavMeshAgent>().enabled = false;
 
         // Set color gray
@@ -462,6 +441,8 @@ public class Creature : MonoBehaviour
     }
     void DoDestroy()
     {
+        transform.localScale = m_size * (m_deadTime - m_deadTimeCount) / m_deadTime;
+
         m_deadTimeCount += Time.deltaTime;
         if (m_deadTime < m_deadTimeCount)
             Destroy(gameObject);
@@ -496,6 +477,19 @@ public class Creature : MonoBehaviour
         return toReturn;
     }
 
+    public virtual void SetDigestInfo()
+    {
+        // digest
+        m_foodCapacity = m_body.m_capacity;
+        m_foodAmount = 0.0f;
+        m_digestSpeed = m_body.m_digSpeed;
+    }
+
     public virtual void Eat(GameObject food_) { }
-    public virtual void Digest() { }
+    public void Digest()
+    {
+        if (m_foodAmount <= 0.0f)
+            m_foodAmount -= m_digestSpeed;
+        m_hunger += m_digestSpeed;
+    }
 }

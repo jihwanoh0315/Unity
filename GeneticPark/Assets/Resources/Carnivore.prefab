@@ -169,14 +169,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1894340834969323271}
-  - component: {fileID: 1894340834969323267}
   - component: {fileID: -426201719568983180}
-  - component: {fileID: 7138538572827824755}
   - component: {fileID: 4393554330442487015}
   - component: {fileID: 200489811106520032}
   - component: {fileID: 6580244407036882646}
+  - component: {fileID: 7260451686131770157}
+  - component: {fileID: 5156177954052163882}
   m_Layer: 7
-  m_Name: Creature
+  m_Name: Carnivore
   m_TagString: Creature
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -200,38 +200,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1894340834969323267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1894340834969323266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d64a805f8a07e4ca1d01e694df0101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_body: {fileID: 6580244407036882646}
-  m_foodLocation: []
-  m_currStat: 0
-  m_type: 2
-  m_worldLevelSetting: {fileID: 0}
-  m_maxSpeed: 0
-  m_usualSpeedRate: 0
-  m_sneakSpeedRate: 0
-  m_hungryRate: 0
-  m_hunger: 0
-  m_foodCapacity: 0
-  m_foodAmount: 0
-  m_digestSpeed: 0
-  m_accel: 0
-  m_force: 0
-  m_health: 0
-  m_size: {x: 0, y: 0, z: 0}
-  m_deadTime: 0.5
-  m_deadTimeCount: 0
-  m_doDestroy: 0
 --- !u!195 &-426201719568983180
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -254,23 +222,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &7138538572827824755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1894340834969323266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dc68187eda64d54892bf83be9eeaf08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_owner: {fileID: 0}
-  m_foodLocation:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
 --- !u!114 &4393554330442487015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +316,52 @@ MonoBehaviour:
   m_sneakSpeedRate: 0
   m_capacity: 0
   m_digSpeed: 0
+--- !u!114 &7260451686131770157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894340834969323266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4745cf0c21693446aec5f5c8113c649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_body: {fileID: 6580244407036882646}
+  m_foodLocation: []
+  m_currStat: 0
+  m_type: 0
+  m_worldLevelSetting: {fileID: 0}
+  m_maxSpeed: 0
+  m_usualSpeedRate: 0
+  m_sneakSpeedRate: 0
+  m_hungryRate: 0
+  m_hunger: 0
+  m_foodCapacity: 0
+  m_foodAmount: 0
+  m_digestSpeed: 0
+  m_accel: 0
+  m_force: 0
+  m_health: 0
+  m_size: {x: 0, y: 0, z: 0}
+  m_deadTime: 0
+  m_deadTimeCount: 0
+  m_doDestroy: 0
+--- !u!114 &5156177954052163882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894340834969323266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa7ccb64ac7e9ab46ad63d3de7d8ef12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_owner: {fileID: 0}
+  m_foodLocation: []
 --- !u!1 &2039863642634820572
 GameObject:
   m_ObjectHideFlags: 0

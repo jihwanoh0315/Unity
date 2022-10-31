@@ -29,12 +29,16 @@ public class Body : MonoBehaviour
 
     public void SetValues()
     {
+        // Set the body parts
+        Legs leg = ((Legs)m_bodyParts[Organ.LEGS]);
+        Chest chest = ((Chest)m_bodyParts[Organ.CHEST]);
+        Eyes eyes = ((Eyes)m_bodyParts[Organ.EYES]);
+        Brain brain = ((Brain)m_bodyParts[Organ.BRAIN]);
+        DigestiveOrgan digOrg = ((DigestiveOrgan)m_bodyParts[Organ.DIGESTIVEORGAN]);
 
         // Set weight
         m_mass = 0.0f;
-        Legs leg = ((Legs)m_bodyParts[Organ.LEGS]);
         m_mass += leg.m_length * leg.m_width;
-        Chest chest = ((Chest)m_bodyParts[Organ.CHEST]);
         m_mass += chest.m_length * chest.m_width;
         m_weight = m_mass * Physics.gravity.y * -1.0f;
 
@@ -65,11 +69,15 @@ public class Body : MonoBehaviour
         m_boneTrans.localPosition =
             new Vector3(m_boneTrans.localPosition.x,/*  (m_tall/ 2.0f)*/0.5f, m_boneTrans.localPosition.z);
 
-        Brain brain = ((Brain)m_bodyParts[Organ.BRAIN]);
+
         m_hunger = m_mass * m_totalEnergyConsume;
         m_hungryRatio = brain.m_hungryRatio;
         m_usualSpeedRate = brain.m_usualSpeedRate;
         m_sneakSpeedRate = brain.m_sneakSpeedRate;
+
+        // Food
+        m_capacity = digOrg.m_size * chest.m_length * chest.m_width;
+        m_digSpeed = digOrg.m_size * digOrg.m_length;
     }
     public Dictionary<Organ, BodyPart> m_bodyParts;
     public float m_totalEnergyConsume;
@@ -87,6 +95,8 @@ public class Body : MonoBehaviour
     public float m_hungryRatio;
     public float m_usualSpeedRate;
     public float m_sneakSpeedRate;
+    public float m_capacity;
+    public float m_digSpeed;
 }
 public class BodyPart
 {

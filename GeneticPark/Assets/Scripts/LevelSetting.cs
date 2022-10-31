@@ -7,7 +7,7 @@ using TMPro;
 public class LevelSetting : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject m_creaturePrefab;
+    public GameObject m_creaturePrefabtoGen;
     public GameObject m_selectedCreature;
     public List<GameObject> m_children = new List<GameObject>();
     public List<GameObject> m_parent = new List<GameObject>();
@@ -124,11 +124,11 @@ public class LevelSetting : MonoBehaviour
     *****************************************************************************/
     GameObject CreateCreature()
     {
-        GameObject creature = Instantiate(m_creaturePrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        GameObject creature = Instantiate(m_creaturePrefabtoGen, new Vector3(0, 0, 0), Quaternion.identity);
         //creature.GetComponent<Creature>().SetGeneRandom(3);
-        creature.GetComponent<Creature>().SetBasicGeneRandom();
+        creature.GetComponent<Creature>().InitializeBodyWithRandomGene();
         creature.GetComponent<Creature>().m_body.m_totalEnergyConsume = 0.0f;
-        creature.GetComponent<Creature>().SetScaleAndColor();
+        creature.GetComponent<Creature>().InitializeCreatureWithBody();
 
         return creature;
     }
@@ -158,9 +158,9 @@ public class LevelSetting : MonoBehaviour
             currParent.name = "Parent " + (i + 1).ToString();
             currParent.layer = 0;
             currParent.GetComponent<NavMeshAgent>().enabled = false;
-            currParent.GetComponent<BT_Creature>().enabled = false;
-            currParent.GetComponent<Creature>().m_hunger = 10.0f;
-            currParent.GetComponent<Creature>().m_body.m_totalEnergyConsume = 0.0f;
+            currParent.GetComponent<BT_Carnivore>().enabled = false;
+            currParent.GetComponent<Carnivore>().m_hunger = 10.0f;
+            currParent.GetComponent<Carnivore>().m_body.m_totalEnergyConsume = 0.0f;
 
             m_children[i].transform.position = new Vector3(-20.0f + xPosRatio * i, m_children[i].transform.localScale.y * 0.5f, -65);
             m_children[i].transform.rotation = Quaternion.identity;
@@ -196,7 +196,7 @@ public class LevelSetting : MonoBehaviour
             currParent.name = "Parent " + (i + 1).ToString();
             currParent.layer = 0;
             currParent.GetComponent<NavMeshAgent>().enabled = false;
-            currParent.GetComponent<BT_Creature>().enabled = false;
+            currParent.GetComponent<BT_Carnivore>().enabled = false;
             currParent.GetComponent<Creature>().m_hunger = 10.0f;
             currParent.GetComponent<Creature>().m_body.m_totalEnergyConsume = 0.0f;
             currParent.transform.position = new Vector3(-10.0f + xPosRatio * i, currParent.transform.localScale.y * 0.5f, -65);
@@ -249,10 +249,10 @@ public class LevelSetting : MonoBehaviour
 
                 Creature parent1 = m_parent[parent1Num].GetComponent<Creature>();
                 Creature parent2 = m_parent[parent2Num].GetComponent<Creature>();
-
-                GameObject creature = Instantiate(m_creaturePrefab, new Vector3(0, 0, 0), Quaternion.identity);
-                creature.GetComponent<Creature>().SetGene(parent1.Reproduction(parent2, m_mutantProb));
-                creature.GetComponent<Creature>().SetScaleAndColor();
+                
+                GameObject creature = Instantiate(m_creaturePrefabtoGen, new Vector3(0, 0, 0), Quaternion.identity);
+                creature.GetComponent<Creature>().InitializeBodyWithGene(parent1.Reproduction(parent2, m_mutantProb));
+                creature.GetComponent<Creature>().InitializeCreatureWithBody();
                 creature.name = "Child " + childCount.ToString();
                 ++childCount;
 
